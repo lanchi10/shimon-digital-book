@@ -113,6 +113,7 @@ let currentDisplayPages = [];          // desktop-swapped or logical (mobile)
 let readFontSize        = parseInt(localStorage.getItem('shimon-font-size') || '18');
 let tocOpen             = false;
 let readOpen            = false;
+let zoomOpen            = false;
 
 // ── DOM refs ─────────────────────────────────────────────────────────────────
 const flipbookEl     = document.getElementById('flipbook');
@@ -138,6 +139,11 @@ const fontDown       = document.getElementById('font-down');
 const fontUp         = document.getElementById('font-up');
 const forwardButton  = document.getElementById('nav-forward'); // RIGHT side — forward
 const backButton     = document.getElementById('nav-back');    // LEFT  side — backward
+const btnZoom        = document.getElementById('btn-zoom');
+const zoomOverlay    = document.getElementById('zoom-overlay');
+const zoomImg        = document.getElementById('zoom-img');
+const zoomScroll     = document.getElementById('zoom-scroll');
+const btnZoomClose   = document.getElementById('btn-zoom-close');
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function isPortrait() { return window.innerWidth < 768; }
@@ -281,12 +287,33 @@ function updateIndicator(pdfPage) {
   pageIndicator.textContent = `${total} / ${entry.readerPage}${label}`;
 }
 
+// ── Mobile zoom (portrait only — desktop button is hidden via CSS) ────────────
+function openZoom() {
+  if (!bookInitialized || !pageFlip) return;
+  const idx   = pageFlip.getCurrentPageIndex();
+  const entry = currentDisplayPages[idx];
+  if (!entry) return;
+  zoomImg.src = `${import.meta.env.BASE_URL}pages/${entry.file}`;
+  zoomImg.alt = entry.label || '';
+  zoomOverlay.classList.add('open');
+  zoomScroll.scrollTo(0, 0);
+  zoomOpen = true;
+}
+
+function closeZoom() {
+  zoomOpen = false;
+  zoomOverlay.classList.remove('open');
+}
+
+btnZoom.addEventListener('click', openZoom);
+btnZoomClose.addEventListener('click', closeZoom);
+
 // ── Navigation (RIGHT = forward, LEFT = backward) ────────────────────────────
 forwardButton.addEventListener('click', () => pageFlip?.flipNext());
 backButton.addEventListener('click',    () => pageFlip?.flipPrev());
 
 document.addEventListener('keydown', (e) => {
-  if (readOpen || !bookInitialized) return;
+  if (readOpen || zoomOpen || !bookInitialized) return;
   if (e.key === 'ArrowRight') { pageFlip?.flipNext(); }
   if (e.key === 'ArrowLeft')  { pageFlip?.flipPrev(); }
 });

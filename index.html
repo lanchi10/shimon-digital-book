@@ -342,6 +342,50 @@
     }
     #overlay.visible { display: block; }
 
+    /* ── Mobile zoom button — hidden on desktop ── */
+    #btn-zoom { display: none; }
+    @media (max-width: 767px) {
+      #btn-zoom { display: flex; }
+    }
+
+    /* ── Zoom overlay (mobile page magnifier) ── */
+    #zoom-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 300;
+      flex-direction: column;
+    }
+    #zoom-overlay.open { display: flex; }
+
+    #zoom-bar {
+      height: 50px;
+      background: var(--brown-dark);
+      border-bottom: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    #zoom-scroll {
+      flex: 1;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y pinch-zoom;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    #zoom-img {
+      width: 185vw;
+      height: auto;
+      display: block;
+      flex-shrink: 0;
+    }
+
     /* ── Mobile ── */
     @media (max-width: 600px) {
       :root { --toolbar-h: 54px; --nav-w: 44px; }
@@ -370,6 +414,7 @@
     <span id="page-indicator" aria-live="polite" aria-label="מיקום בספר"></span>
     <button class="tb-btn" id="btn-home" aria-label="חזרה לכריכה" title="חזרה לכריכה">⌂</button>
     <button class="tb-btn" id="btn-read" aria-label="מצב קריאה">ℵ קריאה</button>
+    <button class="tb-btn" id="btn-zoom" aria-label="הגדלת העמוד לקריאה" title="הגדלת העמוד לקריאה">🔍</button>
     <button class="tb-btn" id="btn-pdf"  aria-label="הורדת PDF">↓ PDF</button>
     <button class="tb-btn" id="btn-fs"   aria-label="מסך מלא">⛶</button>
   </div>
@@ -416,6 +461,16 @@
   </div>
   <div id="read-content"></div>
 </section>
+
+<!-- Zoom overlay — mobile page magnifier -->
+<div id="zoom-overlay" role="dialog" aria-label="מצב הגדלה" aria-modal="true">
+  <div id="zoom-bar">
+    <button class="tb-btn" id="btn-zoom-close" aria-label="חזרה לספר">✕ חזרה לספר</button>
+  </div>
+  <div id="zoom-scroll">
+    <img id="zoom-img" alt="" />
+  </div>
+</div>
 
 <script type="module" src="/src/main.js"></script>
 </body>
