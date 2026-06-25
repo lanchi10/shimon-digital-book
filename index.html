@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="שמעון והדרך אל הבית — ספר ילדים דיגיטלי, 18 פרקים עם איורים" />
+  <meta name="theme-color" content="#2c1f0e" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="שמעון והדרך אל הבית — ספר דיגיטלי" />
+  <meta property="og:description" content="ספר ילדים דיגיטלי, 18 פרקים עם איורים" />
+  <meta property="og:locale"      content="he_IL" />
+  <meta name="twitter:card"       content="summary_large_image" />
+  <title>שמעון והדרך אל הבית — ספר דיגיטלי</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #2c1f0e;
+      --bg2:        #3d2b14;
+      --cream:      #f5ead8;
+      --cream2:     #ede0c4;
+      --brown:      #7a4f2c;
+      --brown-dark: #4a2e10;
+      --gold:       #c8993a;
+      --text:       #1a0f05;
+      --font-book:  'FrankRuhlLibre', 'NotoSerifHebrew', serif;
+      --toolbar-h:  60px;
+      --nav-w:      56px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      font-family: var(--font-book);
+      color: var(--cream);
+      overflow: hidden;
+    }
+
+    /* ── Toolbar ── */
+    #toolbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--toolbar-h);
+      background: var(--brown-dark);
+      border-bottom: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+      gap: 10px;
+    }
+
+    .tb-section { display: flex; align-items: center; gap: 10px; }
+
+    .tb-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gold);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 260px;
+    }
+
+    .tb-btn {
+      background: none;
+      border: 1.5px solid var(--gold);
+      color: var(--cream);
+      border-radius: 7px;
+      cursor: pointer;
+      padding: 7px 13px;
+      font-family: var(--font-book);
+      font-size: 15px;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .tb-btn:hover, .tb-btn:focus {
+      background: var(--gold);
+      color: var(--brown-dark);
+      outline: none;
+    }
+    .tb-btn.active {
+      background: var(--gold);
+      color: var(--brown-dark);
+      font-weight: 700;
+    }
+
+    #page-indicator {
+      font-size: 14px;
+      color: var(--cream2);
+      white-space: nowrap;
+      min-width: 70px;
+      text-align: center;
+    }
+
+    /* ── Cover screen ────────────────────────────────────────────────────────── */
+    #cover-screen {
+      position: fixed;
+      top: var(--toolbar-h);
+      left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      background: var(--bg);
+      z-index: 80;
+    }
+    #cover-screen.hidden { display: none; }
+
+    #cover-book-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: block;
+      line-height: 0;
+    }
+
+    #cover-img {
+      display: block;
+      max-height: calc(100vh - var(--toolbar-h) - 160px);
+      max-width: min(86vw, 520px);
+      width: auto;
+      height: auto;
+      box-shadow: 0 14px 54px rgba(0,0,0,0.85), 0 4px 16px rgba(0,0,0,0.5);
+      border-radius: 2px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    #cover-book-btn:hover #cover-img,
+    #cover-book-btn:focus #cover-img {
+      transform: translateY(-4px) scale(1.015);
+      box-shadow: 0 20px 64px rgba(0,0,0,0.9), 0 6px 22px rgba(0,0,0,0.6);
+    }
+
+    .cover-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #open-book-btn {
+      background: var(--gold);
+      color: var(--brown-dark);
+      border: none;
+      border-radius: 8px;
+      padding: 13px 32px;
+      font-family: var(--font-book);
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 52px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    #open-book-btn:hover { background: #d4a84a; transform: translateY(-2px); }
+    #open-book-btn:active { transform: translateY(0); }
+
+    #continue-btn {
+      background: transparent;
+      color: var(--cream2);
+      border: 1.5px solid var(--gold);
+      border-radius: 8px;
+      padding: 9px 22px;
+      font-family: var(--font-book);
+      font-size: 15px;
+      cursor: pointer;
+      min-height: 44px;
+      transition: background 0.15s, color 0.15s;
+    }
+    #continue-btn:hover { background: var(--brown); color: var(--cream); }
+    #continue-btn[hidden] { display: none; }
+
+    /* Mobile: smaller cover */
+    @media (max-width: 480px) {
+      #cover-img { max-width: 90vw; max-height: calc(100vh - var(--toolbar-h) - 140px); }
+      #open-book-btn { font-size: 16px; padding: 11px 26px; }
+    }
+
+    /* ── Flipbook stage (hidden until book opens) ── */
+    #stage {
+      display: none;
+      position: fixed;
+      top: var(--toolbar-h);
+      left: 0; right: 0; bottom: 0;
+      align-items: center;
+      justify-content: center;
+    }
+    #stage.open { display: flex; }
+
+    /* ── Book container ── */
+    #book-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    #flipbook {
+      background: transparent;
+      box-shadow: 0 10px 48px rgba(0,0,0,0.7), 0 2px 10px rgba(0,0,0,0.4);
+    }
+
+    #flipbook .page {
+      background: var(--cream);
+      overflow: hidden;
+    }
+
+    #flipbook .page img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #flipbook .page-blank {
+      background: var(--cream);
+    }
+
+    /* ── Nav arrows (hidden on cover screen) ── */
+    .nav-arrow {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: var(--nav-w);
+      height: 100px;
+      background: rgba(74,46,16,0.80);
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      font-size: 28px;
+      cursor: pointer;
+      border-radius: 8px;
+      display: none;          /* shown when book opens */
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+    }
+    .nav-arrow.visible { display: flex; }
+    .nav-arrow:hover  { background: var(--gold); color: var(--brown-dark); transform: translateY(-50%) scale(1.05); }
+    .nav-arrow:active { transform: translateY(-50%) scale(0.97); }
+    /* RIGHT = forward in Hebrew book, LEFT = backward */
+    #nav-back    { left: 10px; }
+    #nav-forward { right: 10px; }
+
+    /* ── TOC panel ── */
+    #toc-panel {
+      position: fixed;
+      top: var(--toolbar-h);
+      right: 0;
+      width: min(320px, 90vw);
+      height: calc(100% - var(--toolbar-h));
+      background: var(--bg2);
+      border-left: 2px solid var(--gold);
+      overflow-y: auto;
+      z-index: 200;
+      padding: 16px;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+    }
+    #toc-panel.open { transform: translateX(0); }
+
+    #toc-panel h2 {
+      font-size: 18px;
+      color: var(--gold);
+      margin-bottom: 14px;
+      font-weight: 700;
+    }
+
+    .toc-item {
+      padding: 9px 4px;
+      border-bottom: 1px solid rgba(200,153,58,0.25);
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--cream);
+      transition: color 0.1s;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .toc-item:hover { color: var(--gold); }
+    .toc-num   { font-weight: 700; color: var(--gold); font-size: 13px; flex-shrink: 0; }
+    .toc-title { flex: 1; }
+
+    /* ── Read mode ── */
+    #read-panel {
+      position: fixed;
+      top: var(--toolbar-h);
+      left: 0; right: 0; bottom: 0;
+      background: var(--cream);
+      color: var(--text);
+      overflow-y: auto;
+      z-index: 150;
+      display: none;
+      padding: 24px clamp(16px, 5vw, 80px);
+    }
+    #read-panel.visible { display: block; }
+
+    #read-panel h1 {
+      font-size: clamp(20px, 4vw, 32px);
+      text-align: center;
+      color: var(--brown-dark);
+      margin-bottom: 8px;
+    }
+    #read-panel h2 {
+      font-size: clamp(16px, 3vw, 24px);
+      color: var(--brown);
+      margin-top: 28px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid var(--cream2);
+    }
+    #read-panel p {
+      line-height: 1.85;
+      margin-bottom: 10px;
+    }
+
+    .read-font-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .read-font-controls span { font-size: 13px; color: var(--brown); }
+
+    /* ── Overlay backdrop for TOC ── */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 190;
+    }
+    #overlay.visible { display: block; }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      :root { --toolbar-h: 54px; --nav-w: 44px; }
+      .tb-title { max-width: 120px; font-size: 13px; }
+      .tb-btn { padding: 6px 8px; font-size: 13px; min-width: 40px; min-height: 40px; }
+      .nav-arrow { height: 72px; font-size: 22px; }
+      #nav-back    { left: 4px; }
+      #nav-forward { right: 4px; }
+      /* Hide lower-priority buttons to keep toolbar clean */
+      #btn-pdf, #btn-fs { display: none; }
+      #page-indicator { min-width: 0; font-size: 12px; }
+    }
+
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<header id="toolbar" role="banner">
+  <div class="tb-section">
+    <button class="tb-btn" id="btn-toc" aria-label="תוכן עניינים">☰</button>
+    <span class="tb-title">שִׁמְעוֹן וְהַדֶּרֶךְ אֶל הַבַּיִת</span>
+  </div>
+  <div class="tb-section">
+    <span id="page-indicator" aria-live="polite" aria-label="מיקום בספר"></span>
+    <button class="tb-btn" id="btn-home" aria-label="חזרה לכריכה" title="חזרה לכריכה">⌂</button>
+    <button class="tb-btn" id="btn-read" aria-label="מצב קריאה">ℵ קריאה</button>
+    <button class="tb-btn" id="btn-pdf"  aria-label="הורדת PDF">↓ PDF</button>
+    <button class="tb-btn" id="btn-fs"   aria-label="מסך מלא">⛶</button>
+  </div>
+</header>
+
+<!-- Cover screen — shown first, independent of StPageFlip -->
+<section id="cover-screen" aria-label="כריכת הספר">
+  <button id="cover-book-btn" type="button" aria-label="פתח את הספר — לחץ לפתיחה">
+    <img id="cover-img" alt="כריכת הספר: שמעון והדרך אל הבית" />
+  </button>
+  <div class="cover-buttons">
+    <button id="open-book-btn" type="button">פתח את הספר</button>
+    <button id="continue-btn" type="button" hidden>המשך קריאה</button>
+  </div>
+</section>
+
+<!-- Flipbook stage — hidden until book is opened -->
+<main id="stage" role="main">
+  <div id="book-container">
+    <div id="flipbook">
+      <!-- Pages inserted by JS -->
+    </div>
+  </div>
+</main>
+
+<!-- Nav arrows — visible only when book is open -->
+<button class="nav-arrow" id="nav-back"    aria-label="אחורה — עמוד הקודם">❮</button>
+<button class="nav-arrow" id="nav-forward" aria-label="קדימה — עמוד הבא">❯</button>
+
+<!-- TOC panel -->
+<nav id="toc-panel" aria-label="תוכן עניינים">
+  <h2>תּוֹכֶן הָעִנְיָנִים</h2>
+  <div id="toc-list"></div>
+</nav>
+<div id="overlay" role="presentation"></div>
+
+<!-- Read mode panel -->
+<section id="read-panel" aria-label="מצב קריאה">
+  <div class="read-font-controls">
+    <span>גודל גופן:</span>
+    <button class="tb-btn" id="font-down" aria-label="הקטן גופן">א–</button>
+    <button class="tb-btn" id="font-up"   aria-label="הגדל גופן">א+</button>
+    <button class="tb-btn" id="btn-close-read" aria-label="סגור מצב קריאה">✕ סגור</button>
+  </div>
+  <div id="read-content"></div>
+</section>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
