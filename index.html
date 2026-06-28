@@ -399,6 +399,23 @@
       #page-indicator { min-width: 0; font-size: 12px; }
     }
 
+    /* ── Mobile: nav arrows below the book ── */
+    @media (max-width: 767px) {
+      .nav-arrow {
+        top: auto;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        transform: none;
+        height: 52px;
+        width: 52px;
+        font-size: 22px;
+        border-radius: 8px;
+      }
+      .nav-arrow:hover  { transform: scale(1.05); }
+      .nav-arrow:active { transform: scale(0.97); }
+      #nav-back    { left: 10px; }
+      #nav-forward { right: 10px; }
+    }
+
     :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   </style>
 </head>

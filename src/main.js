@@ -205,7 +205,8 @@ function computeDims() {
   const portrait = W < 768;
 
   if (portrait) {
-    const side = Math.min(W - 10, H - 16);
+    const navBarH = 72; // bottom nav arrows: 52px button + 10px margin + breathing room
+    const side = Math.min(W - 10, H - 16 - navBarH);
     return { w: Math.floor(side), h: Math.floor(side) };
   }
   const navClearance = 140;
